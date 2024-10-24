@@ -3,6 +3,10 @@ const mongoose = require("mongoose");
 const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/category");
 const authRoute = require("./routes/auth");
+const cartRoute = require("./routes/cart");
+const importOrderRoute = require("./routes/importOrder");
+const orderRoute = require("./routes/order");
+const userRoute = require("./routes/user");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const path = require("path");
@@ -45,6 +49,9 @@ const upload = multer({
 app.use(upload.array("img"));
 app.use("/api", productRoute);
 app.use("/api", categoryRoute);
+app.use("/api", authRoute);
+app.use("/api", authRoute);
+app.use("/api", authRoute);
 app.use("/api", authRoute);
 
 app.use((req, res, next) => {

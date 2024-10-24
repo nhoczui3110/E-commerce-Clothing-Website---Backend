@@ -24,7 +24,7 @@ exports.verifyTokenAndAdmin = (req, res, next) => {
     }
 };
 
-exports.verifyTokenAndAdmin = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
     const token = req.headers["authorization"];
 
     if (!token) {
