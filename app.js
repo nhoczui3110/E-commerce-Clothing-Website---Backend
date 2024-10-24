@@ -14,10 +14,14 @@ const User = require("./models/user");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+const importOrderRoute = require('./routes/importOder');
+
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_URI = process.env.DB_URI;
-
+app.use('/api/import-orders', importOrderRoute);
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/public", express.static(path.join(__dirname, "public")));
