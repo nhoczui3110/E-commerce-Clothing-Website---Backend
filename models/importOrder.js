@@ -25,11 +25,12 @@ const orderItemSchema = new Schema({
     },
 });
 const importOrderSchema = new Schema({
-    supplier: { type: Schema.Types.ObjectId, ref: "Supplier", required: true },
     orderItems: [orderItemSchema],
     totalCost: { type: Number, required: true },
     receivedAt: { type: Date, default: Date.now },
     createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("ImportOrder", importOrderSchema);
+const ImportOrder = mongoose.model("ImportOrder", importOrderSchema);
+
+module.exports = ImportOrder;

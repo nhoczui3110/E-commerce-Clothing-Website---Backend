@@ -42,6 +42,18 @@ const userSchema = new Schema({
             color: { type: String, required: true }, // Màu sắc đã chọn
         },
     ],
+    ratings: [
+        {
+            product: {
+                type: Schema.Types.ObjectId,
+                ref: "Product",
+                required: true,
+            },
+            rating: { type: Number, required: true, min: 1, max: 5 }, // Đánh giá từ 1-5
+            comment: { type: String, required: true },
+        },
+    ],
 });
 
-module.exports = model("User", userSchema);
+const User = model("User", userSchema);
+module.exports = User;

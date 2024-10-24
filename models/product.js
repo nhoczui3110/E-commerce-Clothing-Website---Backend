@@ -11,12 +11,13 @@ const variantSchema = new Schema({
         required: true,
     },
     size: [sizeSchema],
-    imageUrl: [{ type: String }],
+    imageUrl: { type: String },
+    isUsed: { type: Boolean, default: true },
 });
 
 const productSchema = new Schema({
     name: { type: String, required: true },
-    slug: { type: String, required: true },
+    slug: { type: String, required: true, unique: true },
     description: { type: String },
     category: { type: Schema.Types.ObjectId, required: true, ref: "Category" }, // Ví dụ: "Áo", "Quần", "Phụ kiện"
     variants: [variantSchema],
@@ -29,6 +30,15 @@ const productSchema = new Schema({
         type: Number,
         default: 0,
     },
+    isUsed: { type: Boolean, default: true },
+    reviews: [
+        {
+            user: { type: Schema.Types.ObjectId, ref: "User" },
+            rating: { type: Number, required: true, min: 1, max: 5 },
+            comment: { type: String },
+        },
+    ],
+    averageRating: { type: Number, default: 0 },
 });
-
-module.exports = model("Product", productSchema);
+const Product = model("Product", productSchema);
+module.exports = Product;
