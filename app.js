@@ -3,10 +3,14 @@ const mongoose = require("mongoose");
 const productRoute = require("./routes/product");
 const bodyParser = require("body-parser");
 require("dotenv").config();
+const importOrderRoute = require('./routes/importOder');
+
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DB_URI = process.env.DB_URI;
-
+app.use('/api/import-orders', importOrderRoute);
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
