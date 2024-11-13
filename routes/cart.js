@@ -8,9 +8,9 @@ const {
 } = require("../controllers/cart");
 const authorization = require("../middlewares/authorization");
 
-router.get("/", authorization.verifyToken, getCart);
-router.post("/", authorization.verifyToken, addToCart);
-router.put("/:cartItemId", authorization.verifyToken, updateCartItem);
-router.delete("/:cartItemId", authorization.verifyToken, removeFromCart);
+router.get("/cart", authorization.verifyToken, getCart);
+router.post("/cart", authorization.verifyToken, addToCart);
+router.put("/cart/:cartItemId", authorization.verifyToken, updateCartItem);
+router.delete("/cart/:cartItemId", authorization.verifyToken, removeFromCart);
 
 module.exports = router;

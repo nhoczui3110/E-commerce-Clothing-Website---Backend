@@ -9,6 +9,7 @@ const authorization = require("../middlewares/authorization");
 
 // /api/products
 router.get("/products", productController.getProducts);
+router.get("/products/demo", productController.getProductsDemo);
 router.post(
     "/products",
 
@@ -88,6 +89,7 @@ router.post(
     ],
     productController.postProducts
 );
+router.get("/products/search", productController.searchOnProducts);
 router.get("/products/:slug", productController.getProductDetail);
 router.put("/products/:slug", productController.putProductDetail);
 router.delete(
@@ -95,4 +97,5 @@ router.delete(
     authorization.verifyTokenAndAdmin,
     productController.deleteProduct
 );
+router.get("/products-all", productController.getProductsAll);
 module.exports = router;

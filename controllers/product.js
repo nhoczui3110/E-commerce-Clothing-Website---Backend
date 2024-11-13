@@ -4,9 +4,9 @@ const Product = require("../models/product");
 const ImportOrder = require("../models/importOrder");
 const Order = require("../models/order");
 const fs = require("fs");
-const { error } = require("console");
 
 exports.getProducts = async (req, res, next) => {
+    console.log(req.query);
     const page = parseInt(req.query.page) || 1;
     const quantity = 12;
     const categorySlugs = req.query.category
@@ -121,6 +121,62 @@ exports.getProducts = async (req, res, next) => {
     }
 };
 
+exports.searchOnProducts = async (req, res, next) => {
+    try {
+        const keyword = req.query.keyword;
+
+        if (!keyword) {
+            return res.json([]);
+        }
+        const category = await Category.findOne({
+            name: { $regex: keyword, $options: "i" },
+        });
+        const searchConditions = [
+            { name: { $regex: keyword, $options: "i" } },
+            { slug: { $regex: keyword, $options: "i" } },
+        ];
+        if (category) {
+            searchConditions.push({ category: category._id });
+        }
+        const products = await Product.find({ $or: searchConditions }).populate(
+            "category"
+        );
+        res.json(products);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
+exports.getProductsDemo = async (req, res, next) => {
+    const quantity = 5;
+    const orderBy = req.query.orderBy;
+    try {
+        if (!orderBy) {
+            throw new Error("yêu cầu orderBy");
+        }
+        const products = await Product.find()
+            .populate("category")
+            .sort({ [orderBy]: -1 })
+            .limit(quantity);
+
+        res.status(200).json(products);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
+exports.getProductsAll = async (req, res, next) => {
+    try {
+        const products = await Product.find().populate("category");
+        res.json({ products });
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+};
+
 exports.postProducts = async (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -160,12 +216,14 @@ exports.getProductDetail = async (req, res, next) => {
     const slug = req.params.slug.trim();
     try {
         let product = await Product.findOne({ slug, isUsed: true }).populate(
-            "category"
+            "category reviews.user"
         );
         if (product) {
             product.variants = product.variants.filter(
                 (variant) => variant.isUsed
             );
+            product.views += 1;
+            await product.save();
             return res.json({ product });
         }
         const error = new Error("Product not found!");

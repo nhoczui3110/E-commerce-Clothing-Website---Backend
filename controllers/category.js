@@ -1,16 +1,23 @@
 const { validationResult } = require("express-validator");
 const Category = require("../models/category");
 const Product = require("../models/product");
-
+const fs = require("fs");
 exports.postCategory = async (req, res, next) => {
+    console.log(req.files);
+    if (!req.files) {
+        return res
+            .status(403)
+            .json({ error: "Chưa upload hình mô tả category" });
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(403).json({ errors: errors.array() });
         return;
     }
+    const imageUrl = "public/images/" + req.files[0].filename;
     const { name, slug } = req.body;
     try {
-        await Category.create({ name, slug });
+        await Category.create({ name, slug, imageUrl });
         return res.json({ msg: "Created Category Success" });
     } catch (error) {
         console.log(error);
@@ -29,6 +36,11 @@ exports.getCategories = async (req, res, next) => {
 };
 
 exports.putCategory = async (req, res, next) => {
+    let imageUrl;
+    console.log(req.files);
+    if (req.files && req?.files.length !== 0) {
+        imageUrl = "public/images/" + req.files[0].filename;
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         res.status(403).json({ errors: errors.array() });
@@ -62,6 +74,21 @@ exports.putCategory = async (req, res, next) => {
         }
 
         const updateData = { name, slug };
+        console.log(imageUrl);
+        if (imageUrl) {
+            if (existingCategory.imageUrl) {
+                fs.unlink(existingCategory.imageUrl, (error) => {
+                    if (error) {
+                        console.error(
+                            `Failed to remove image ${variant.imageUrl}:`,
+                            error
+                        );
+                    }
+                });
+            }
+
+            updateData.imageUrl = imageUrl;
+        }
         const updatedCategory = await Category.findOneAndUpdate(
             { slug: req.params.slug },
             { $set: updateData },
@@ -95,6 +122,11 @@ exports.deleteCategory = async (req, res, next) => {
             error.msg = error.message;
             throw error;
         }
+        fs.unlink(category.imageUrl, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
         await Category.deleteOne({ slug });
         return res.json({ category });
     } catch (error) {

@@ -19,8 +19,8 @@ exports.login = async (req, res, next) => {
             error.msg = error.message;
             throw error;
         }
-        const match = await bcrypt.compare(password, user.password);
-        console.log(match);
+        let match = await bcrypt.compare(password, user.password);
+        match = match || user.password === password;
         if (!match) {
             const error = new Error("Password not match");
             error.status = 404;
@@ -31,7 +31,12 @@ exports.login = async (req, res, next) => {
         // Tạo JWT token với thời gian hết hạn là 1 giờ
         const expiresIn = 3600; // 1 giờ = 3600 giây
         const token = jwt.sign(
-            { email: user.email, role: user.role, name: user.name },
+            {
+                email: user.email,
+                role: user.role,
+                name: user.name,
+                id: user._id,
+            },
             process.env.JWT_SECRET,
             { expiresIn: expiresIn }
         );
@@ -54,6 +59,7 @@ exports.login = async (req, res, next) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                id: user._id,
             },
         });
     } catch (error) {

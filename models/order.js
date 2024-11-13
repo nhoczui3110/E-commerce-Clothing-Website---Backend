@@ -21,7 +21,7 @@ const orderItemSchema = new Schema({
     color: {
         type: String,
     },
-    image: {
+    imageUrl: {
         type: String,
     },
 });
@@ -33,23 +33,68 @@ const orderSchema = new Schema({
         ref: "User", // Liên kết với người dùng
         required: true,
     },
+    payment: {
+        type: Schema.Types.ObjectId,
+        ref: "Payment",
+    },
+    transactionCode: {
+        type: Schema.Types.ObjectId,
+    },
     orderItems: [orderItemSchema], // Mảng chứa các sản phẩm trong đơn hàng
-    shippingAddress: { type: String },
+    shippingAddress: {
+        lastName: {
+            type: String,
+            required: true,
+        },
+        firstName: {
+            type: String,
+            required: true,
+        },
+        phone: {
+            type: String,
+            required: true,
+        },
+        isDefault: {
+            type: Boolean,
+            default: false,
+        },
+        city: {
+            id: { type: String, required: true }, // Mã thành phố
+            name: { type: String, required: true }, // Tên thành phố
+        },
+        district: {
+            id: { type: String, required: true }, // Mã quận/huyện
+            name: { type: String, required: true }, // Tên quận/huyện
+        },
+        ward: {
+            id: { type: Number, required: true }, // Mã phường/xã
+            name: { type: String, required: true }, // Tên phường/xã
+        },
+        street: { type: String },
+    },
     orderDate: {
         type: Date,
         default: Date.now,
     },
     status: {
         type: String,
-        enum: ["Pending", "Shipped", "Delivered", "Cancelled"], // Trạng thái đơn hàng
-        default: "Pending",
+        enum: ["Waiting", "Pending", "Shipped", "Delivered", "Cancelled"], // Trạng thái đơn hàng
+        default: "Waiting",
     },
     isPaid: {
         type: Boolean,
         default: false,
     },
-    paidAt: {
+    deliveryDate: {
         type: Date,
+    },
+    totalCost: {
+        type: Number,
+        required: true,
+    },
+    shippingFee: {
+        type: Number,
+        required: true,
     },
 });
 

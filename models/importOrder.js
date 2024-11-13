@@ -20,15 +20,26 @@ const orderItemSchema = new Schema({
     color: {
         type: String,
     },
-    image: {
+    imageUrl: {
         type: String,
     },
 });
 const importOrderSchema = new Schema({
     orderItems: [orderItemSchema],
     totalCost: { type: Number, required: true },
-    receivedAt: { type: Date, default: Date.now },
-    createdAt: { type: Date, default: Date.now },
+    receivedAt: {
+        type: Date,
+        default: null,
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    status: {
+        type: String,
+        enum: ["Pending", "Complete", "Cancelled"], // Trạng thái đơn hàng
+        default: "Pending",
+    },
 });
 
 const ImportOrder = mongoose.model("ImportOrder", importOrderSchema);

@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, default: mongoose } = require("mongoose");
 
 const paymentSchema = new Schema({
     user: {
@@ -14,17 +14,15 @@ const paymentSchema = new Schema({
     paymentMethod: {
         type: String,
         required: true,
-        enum: ["PayPal", "Stripe", "CreditCard"], // Enum cho phương thức thanh toán
+        enum: ["VNPAY", "ByCash"], // Enum cho phương thức thanh toán
     },
-    paymentStatus: {
-        type: String,
-        required: true,
-        enum: ["pending", "complete", "failed"],
-    },
+    paidAt: Date,
     createdAt: {
         type: Date,
         default: Date.now,
     },
 });
 
-module.exports = model("Payment", paymentSchema);
+const Payment = mongoose.model("Payment", paymentSchema);
+
+module.exports = Payment;
