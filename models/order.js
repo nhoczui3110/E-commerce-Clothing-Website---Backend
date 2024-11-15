@@ -37,9 +37,6 @@ const orderSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Payment",
     },
-    transactionCode: {
-        type: Schema.Types.ObjectId,
-    },
     orderItems: [orderItemSchema], // Mảng chứa các sản phẩm trong đơn hàng
     shippingAddress: {
         lastName: {

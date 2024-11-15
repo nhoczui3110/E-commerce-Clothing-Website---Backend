@@ -56,9 +56,6 @@ const userSchema = new Schema({
             street: { type: String },
         },
     ],
-    phone: {
-        type: String,
-    },
     createdAt: {
         type: Date,
         default: Date.now,
